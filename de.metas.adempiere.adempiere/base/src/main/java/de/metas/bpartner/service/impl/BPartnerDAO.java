@@ -2,8 +2,6 @@ package de.metas.bpartner.service.impl;
 
 import static org.adempiere.model.InterfaceWrapperHelper.loadOutOfTrx;
 
-import lombok.NonNull;
-
 /*
  * #%L
  * de.metas.adempiere.adempiere.base
@@ -82,6 +80,7 @@ import de.metas.util.Check;
 import de.metas.util.GuavaCollectors;
 import de.metas.util.NumberUtils;
 import de.metas.util.Services;
+import lombok.NonNull;
 
 public class BPartnerDAO implements IBPartnerDAO
 {
@@ -920,5 +919,17 @@ public class BPartnerDAO implements IBPartnerDAO
 				// not every type has one
 				return null;
 		}
+	}
+
+	@Override
+	public ImmutableSet<BPartnerId> retrieveAllCustomerIDs()
+	{
+		return Services.get(IQueryBL.class)
+				.createQueryBuilder(I_C_BPartner.class)
+				.addOnlyActiveRecordsFilter()
+				.addOnlyContextClient()
+				.addEqualsFilter(I_C_BPartner.COLUMNNAME_IsCustomer, true)
+				.create()
+				.listIds(BPartnerId::ofRepoId);
 	}
 }

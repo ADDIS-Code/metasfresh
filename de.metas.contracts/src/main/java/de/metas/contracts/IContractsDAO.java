@@ -26,6 +26,7 @@ package de.metas.contracts;
 import java.math.BigDecimal;
 import java.util.List;
 
+import de.metas.bpartner.BPartnerId;
 import de.metas.contracts.model.I_C_Flatrate_Term;
 import de.metas.contracts.model.I_C_SubscriptionProgress;
 import de.metas.order.OrderId;
@@ -61,6 +62,8 @@ public interface IContractsDAO extends ISingletonService
 
 	List<I_C_SubscriptionProgress> getSubscriptionProgress(I_C_Flatrate_Term currentTerm);
 	
-	List<I_C_Flatrate_Term> retrieveFlatrateTerms(@NonNull final OrderId orderId);
+	List<I_C_Flatrate_Term> retrieveFlatrateTermsForOrderId(@NonNull final OrderId orderId);
+
+	I_C_Flatrate_Term retrieveLatestFlatrateTermForBPartnerId(BPartnerId bpartnerId);
 
 }

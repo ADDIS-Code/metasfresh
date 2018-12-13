@@ -35,6 +35,7 @@ import org.adempiere.util.proxy.Cached;
 import org.compiere.model.IQuery;
 import org.compiere.model.IQuery.Aggregate;
 
+import de.metas.bpartner.BPartnerId;
 import de.metas.contracts.IContractsDAO;
 import de.metas.contracts.model.I_C_Flatrate_Conditions;
 import de.metas.contracts.model.I_C_Flatrate_Term;
@@ -156,7 +157,7 @@ public class ContractsDAO implements IContractsDAO
 	
 	@Cached(cacheName = I_C_Flatrate_Term.Table_Name + "#by#OrderId")
 	@Override
-	public List<I_C_Flatrate_Term> retrieveFlatrateTerms(@NonNull final OrderId orderId)
+	public List<I_C_Flatrate_Term> retrieveFlatrateTermsForOrderId(@NonNull final OrderId orderId)
 	{
 		return Services.get(IQueryBL.class).createQueryBuilder(I_C_OrderLine.class)
 				.addOnlyActiveRecordsFilter()
@@ -167,4 +168,16 @@ public class ContractsDAO implements IContractsDAO
 				.list();
 	}
 	
+	@Cached(cacheName = I_C_Flatrate_Term.Table_Name + "#by#BPartnerId")
+	@Override
+	public I_C_Flatrate_Term retrieveLatestFlatrateTermForBPartnerId(@NonNull final BPartnerId bpartnerId)
+	{
+		return Services.get(IQueryBL.class).createQueryBuilder(I_C_Flatrate_Term.class)
+				.addOnlyActiveRecordsFilter()
+				.addOnlyContextClient()
+				.addEqualsFilter(I_C_Flatrate_Term.COLUMNNAME_Bill_BPartner_ID, bpartnerId.getRepoId())
+				.orderByDescending(I_C_Flatrate_Term.COLUMNNAME_MasterEndDate)
+				.create()
+				.first();
+	}
 }
